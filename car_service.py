@@ -5,9 +5,9 @@ from rent_car_company import list_cars, Car, get_value_list_cars
 app = Flask(__name__)
 
 
-@app.route('/ping')
+@app.route('/ping', methods=['GET'])
 def ping():
-    return jsonify({'message': 'pong'})
+    return jsonify({'message': 'Car server works'})
 
 
 @app.route('/car', methods=['GET', 'POST'])
@@ -45,5 +45,4 @@ def car_list():
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='localhost', port=8000)
+    app.run(host='0.0.0.0', debug=True, port=8000)
