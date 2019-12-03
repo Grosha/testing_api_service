@@ -11,32 +11,55 @@ def ping():
 
 
 @app.route('/car', methods=['GET', 'POST'])
-@app.route('/car/<model>', methods=['DELETE'])
-def car(model=None):
+def car():
     if request.method == 'GET':
         counter = 0
         for car in list_cars:
-            counter += 1
-            if car.get_status() == 1:
-                try:
-                    return jsonify({'message': car.get_car_info()})
-                finally:
-                    car.status = 0
-            if counter is len(list_cars):
-                return jsonify({'message': 'No free car available'})
+            if request.form['model'] == car.get_model():
+                return jsonify({'message': car.get_car_info()})
+            else:
+                counter += 1
+                if car.get_status() == 1:
+                    try:
+                        return jsonify({'message': car.get_car_info()})
+                    finally:
+                        car.status = 0
+                if counter is len(list_cars):
+                    return jsonify({'message': 'No free car available'})
     elif request.method == 'POST':
         # '{"name":"value1", "model":"value2", "type":"value2", "status":1}'
         response = request.json
         list_cars.add(Car(name=response['name'], model=response['model'],
                           type=response['type'], status=response['status']))
         return jsonify({'message': get_value_list_cars()})
-    elif request.method == 'DELETE':
+
+
+@app.route('/car/<model>', methods=['DELETE'])
+@app.route('/car/<model>/update', methods=['PATCH'])
+def car(model=None):
+    if request.method == 'DELETE':
         counter = 0
         for car in list_cars:
             counter += 1
             if car.get_model() == model:
                 list_cars.remove(car)
                 return jsonify({'message': get_value_list_cars()})
+            if counter is len(list_cars):
+                return jsonify({'message': 'That car is absent in the list'})
+    elif request.method == 'PATCH':
+        counter = 0
+        for car in list_cars:
+            counter += 1
+            if car.get_model() == model:
+                if request.form['status']:
+                    car.status == request.form['status']
+                if request.form['model']:
+                    car.status == request.form['model']
+                if request.form['type']:
+                    car.status == request.form['type']
+                if request.form['name']:
+                    car.status == request.form['name']
+                return jsonify({'message': car.get_car_info()})
             if counter is len(list_cars):
                 return jsonify({'message': 'That car is absent in the list'})
 
