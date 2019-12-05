@@ -15,10 +15,14 @@ def car():
     if request.method == 'GET':
         counter = 0
         for car in list_cars:
-            if request.form['model'] == car.get_model():
-                return jsonify({'message': car.get_car_info()})
+            counter += 1
+            model = request.args.get('model', type=str)
+            if model:
+                if model.lower() == car.get_model().lower():
+                    return jsonify({'message': car.get_car_info()})
+                if counter is len(list_cars):
+                    return jsonify({'message': f'Car model {model} is absent in the list'})
             else:
-                counter += 1
                 if car.get_status() == 1:
                     try:
                         return jsonify({'message': car.get_car_info()})
@@ -31,37 +35,48 @@ def car():
         response = request.json
         list_cars.add(Car(name=response['name'], model=response['model'],
                           type=response['type'], status=response['status']))
-        return jsonify({'message': get_value_list_cars()})
+        # return jsonify({'message': get_value_list_cars()})
+        return jsonify({'message': 'New car added'})
 
 
 @app.route('/car/<model>', methods=['DELETE'])
-@app.route('/car/<model>/update', methods=['PATCH'])
-def car(model=None):
+def delete_car(model):
     if request.method == 'DELETE':
-        counter = 0
-        for car in list_cars:
-            counter += 1
-            if car.get_model() == model:
-                list_cars.remove(car)
-                return jsonify({'message': get_value_list_cars()})
-            if counter is len(list_cars):
-                return jsonify({'message': 'That car is absent in the list'})
-    elif request.method == 'PATCH':
-        counter = 0
-        for car in list_cars:
-            counter += 1
-            if car.get_model() == model:
-                if request.form['status']:
-                    car.status == request.form['status']
-                if request.form['model']:
-                    car.status == request.form['model']
-                if request.form['type']:
-                    car.status == request.form['type']
-                if request.form['name']:
-                    car.status == request.form['name']
-                return jsonify({'message': car.get_car_info()})
-            if counter is len(list_cars):
-                return jsonify({'message': 'That car is absent in the list'})
+        if model:
+            counter = 0
+            for car in list_cars:
+                counter += 1
+                if car.get_model().lower() == model.lower():
+                    list_cars.remove(car)
+                    # return jsonify({'message': get_value_list_cars()})
+                    return jsonify({'message': f'Car model {model} removed'})
+                if counter is len(list_cars):
+                    return jsonify({'message': 'That car is absent in the list'})
+        else:
+            return jsonify({'message': "Model name wasn't written"})
+
+
+@app.route('/car/update/<model>', methods=['PATCH'])
+def update_car(model):
+    if request.method == 'PATCH':
+        if model:
+            counter = 0
+            for car in list_cars:
+                counter += 1
+                if car.get_model().lower() == model.lower():
+                    if request.args.get('status', type=str):
+                        car.status = request.args.get('status')
+                    elif request.args.get('model', type=str):
+                        car.model = request.args.get('model')
+                    elif request.args.get('type', type=str):
+                        car.type = request.args.get('type')
+                    elif request.args.get('name', type=str):
+                        car.name = request.args.get('name')
+                    return jsonify({'message': car.get_car_info()})
+                if counter is len(list_cars):
+                    return jsonify({'message': 'That car is absent in the list'})
+            else:
+                return jsonify({'message': "Model name wasn't added"})
 
 
 @app.route('/car_list', methods=['GET'])

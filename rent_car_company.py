@@ -1,3 +1,6 @@
+import json
+
+
 class Car:
     def __init__(self, name, model, type, status):
         self.name = name
@@ -15,7 +18,8 @@ class Car:
         return self.status
 
     def get_car_info(self):
-        return f'name: {self.name}, model: {self.model}, type: {self.type}, status: {self.status}'
+        car_info = f'"name": "{self.name}", "model": "{self.model}", "type": "{self.type}", "status": {self.status}'
+        return json.loads('{' + car_info + '}')
 
 
 # list_cars = {
