@@ -74,18 +74,18 @@ example:
 
 #### POST /car
 
-`GET /car` -> return list with all cars
+`POST /car` -> return list with all cars
 example of json - '{"name":"Tesla", "model":"Model3", "type":"Sedan", "status":1}'
 
 
 #### DELETE /car/<model>
 
-`GET /car/<model>` parameter model must be get from the car list (see in file rent_car_company.py) -> return list with all cars
+`DELETE /car/<model>` parameter model must be get from the car list (see in file rent_car_company.py) -> return list with all cars
 
 
 #### PATCH /car/update/<model>
 
-`GET /car/update/<model>?model=model_name&name=car_name&status=car_status&type=car_type` parameter model must be get from the car list (see in file rent_car_company.py) -> return car information about that model
+`PATCH /car/update/<model>?model=model_name&name=car_name&status=car_status&type=car_type` parameter model must be get from the car list (see in file rent_car_company.py) -> return car information about that model
 
 
 
