@@ -1,16 +1,19 @@
 version: "3"
 services:
-  car_service:
+  api:
     container_name: car_service
     build: .
     command: pipenv run python ./car_service.py
     ports:
       -  8000:8000
     network_mode: host
-  report_serive:
-    container_name: my_jenkins
-    image: jenkins/jenkins:lts
-    ports:
-      - 8000:8000
-      - 50000:50000
-    network_mode: host
+#  report_serive:
+#    container_name: my_jenkins
+#    image: jenkins/jenkins:lts
+#    user: root
+#    ports:
+#      - 8000:8000
+#      - 50000:50000
+#    volumes:
+#      - /home/groskka/PycharmProjects/car_service:/var/jenkins_home
+#    network_mode: host

@@ -1,4 +1,5 @@
 import json
+from random import randint
 
 import pytest
 
@@ -7,12 +8,21 @@ from settings.services import car_api_service
 
 
 class TestAddNewCar:
-    def test_add_presented_car(self):
-        new_car = '{"name":"Accord", "model":"Honda", "type":"Sedan", "status":1}'
+
+    def test_add_new_car(self):
+        model = f'Accord v{randint(0, 1000)}'
+        new_car = '{"name":"Honda", "model":"' + model + '", "type":"Sedan", "status":1}'
         add_response_message = car_api_service.add_new_car(car=new_car).get('message')
 
         assert add_response_message == ResponseMessages.NEW_CAR_ADDED, f'Problem with adding car:' \
             f'\n{add_response_message}, must be\n{ResponseMessages.NEW_CAR_ADDED}'
+
+    def test_add_presented_car(self):
+        new_car = '{"name":"Honda", "model":"Accord", "type":"Sedan", "status":1}'
+        add_response_message = car_api_service.add_new_car(car=new_car).get('message')
+
+        assert 'Car presence in the list:' in add_response_message, f'Problem with adding presented car:' \
+            f'\n{add_response_message}'
 
     @pytest.mark.parametrize(
         'new_car, message',

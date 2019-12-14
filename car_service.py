@@ -15,18 +15,27 @@ def ping():
 @app.route('/car', methods=['GET', 'POST'])
 def car():
     if request.method == 'GET':
-        counter = 0
-        for car in list_cars:
-            counter += 1
-            model = request.args.get('model', type=str)
-            if model:
-                if model.lower() == car.get_model().lower():
-                    return jsonify({'message': car.get_car_info()})
-                if counter is len(list_cars):
-                    return jsonify({'message': f'Car model {model} is absent in the list'})
-            # elif model is None or model is '':
-            #     return jsonify({'message': 'Car model was not written'})
+
+        args = request.args
+        if len(args) > 0:
+            counter = 0
+            if 'model' in args:
+                model = args.get('model', type=str)
+                if model:
+                    for car in list_cars:
+                        counter += 1
+                        if model.lower() == car.get_model().lower():
+                            return jsonify({'message': car.get_car_info()})
+                        if counter == len(list_cars):
+                            return jsonify({'message': f'Car model {model} is absent in the list'})
+                else:
+                    return jsonify({'message': f'Car model {model} is not written'})
             else:
+                return jsonify({'message': 'Incorrect parameter'})
+        else:
+            counter = 0
+            for car in list_cars:
+                counter += 1
                 if car.get_status() == 1:
                     try:
                         return jsonify({'message': car.get_car_info()})

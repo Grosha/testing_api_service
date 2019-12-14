@@ -10,10 +10,10 @@ class TestGetCar:
 
     def test_get_car(self):
         car = car_api_service.get_car().get('message')
-        re.match('.+', car.get('name'))
-        re.match('.+', car.get('model'))
-        re.match('.+', car.get('type'))
-        re.match(r'\\n\d+\\n', str(car.get('status')))
+        re.match('\w+', car['name'])
+        re.match('\w+', car['model'])
+        re.match('\w+', car['type'])
+        re.match(r'\\n\d+\\n', str(car['status']))
 
     @pytest.mark.parametrize(
         'model_name, message',
@@ -34,10 +34,10 @@ class TestGetCar:
     @pytest.mark.parametrize(
         'parameter, message',
         [
-            ('name=Honda', ResponseMessages.NO_FREE_CAR_AVAILABLE),
-            ('status=1', ResponseMessages.NO_FREE_CAR_AVAILABLE),
-            ('type=Sedan', ResponseMessages.NO_FREE_CAR_AVAILABLE),
-            ('test=test', ResponseMessages.NO_FREE_CAR_AVAILABLE)
+            ('name=Honda', ResponseMessages.INCORRECT_PARAMETER),
+            ('status=1', ResponseMessages.INCORRECT_PARAMETER),
+            ('type=Sedan', ResponseMessages.INCORRECT_PARAMETER),
+            ('test=test', ResponseMessages.INCORRECT_PARAMETER)
         ]
     )
     def test_get_car_by_any_parameters(self, parameter, message):
@@ -49,7 +49,7 @@ class TestGetCar:
     @pytest.fixture(scope="function", autouse=False)
     def rent_all_car(self):
         car_list = car_api_service.get_car_list().get('message')
-        car_api_service.get_car()
+        # car_api_service.get_car()
 
         for car in car_list:
             car_api_service.update_car(model=car.get('model'), parameter='status=0')
@@ -58,15 +58,14 @@ class TestGetCar:
             car_api_service.update_car(model=car.get('model'), parameter='status=1')
 
     def test_get_car_when_no_available(self, rent_all_car):
-        expected_message = 'No free car available'
         actual_message = car_api_service.get_car().get('message')
-        assert actual_message == expected_message, f'Incorrect message when all car are absent:' \
-            f'\n{actual_message} but must be\n{expected_message}'
+        assert actual_message == ResponseMessages.NO_FREE_CAR_AVAILABLE, f'Incorrect message when all car are absent:' \
+            f'\n{actual_message} but must be\n{ ResponseMessages.NO_FREE_CAR_AVAILABLE}'
 
-    def test_get_car_for_fail(self):
+    def test_get_car_fail(self):
         car = car_api_service.get_car().get('message')
-        assert re.match('\d+', car.get('name')) == True
-        # re.match(r'\\n\d+\\n', car.get('name'))
-        # re.match('.+', car.get('model'))
-        # re.match('.+', car.get('type'))
-        # re.match(r'\\n\d+\\n', str(car.get('status')))
+        # re.match('\w+', car['name'])
+        re.match('\w+', car['model'])
+        re.match('\w+', car['type'])
+        re.match(r'\\n\d+\\n', str(car['status']))
+        re.match(r'\\n\d+\\n', car['name'])
