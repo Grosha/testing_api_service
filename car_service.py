@@ -31,7 +31,7 @@ def car():
                 else:
                     return jsonify({'message': f'Car model {model} is not written'})
             else:
-                return jsonify({'message': 'Incorrect parameter'})
+                return jsonify({'message': 'Incorrect request parameter'})
         else:
             counter = 0
             for car in list_cars:
@@ -86,17 +86,18 @@ def update_car(model):
     if request.method == 'PATCH':
         if model:
             counter = 0
+            update_data = request.args
             for car in list_cars:
                 counter += 1
                 if car.get_model().lower() == model.lower():
-                    if request.args.get('status', type=str):
-                        car.status = request.args.get('status')
-                    elif request.args.get('model', type=str):
-                        car.model = request.args.get('model')
-                    elif request.args.get('type', type=str):
-                        car.type = request.args.get('type')
-                    elif request.args.get('name', type=str):
-                        car.name = request.args.get('name')
+                    if update_data.get('status', type=str):
+                        car.status = int(update_data.get('status'))
+                    elif update_data.get('model', type=str):
+                        car.model = update_data.get('model')
+                    elif update_data.get('type', type=str):
+                        car.type = update_data.get('type')
+                    elif update_data.get('name', type=str):
+                        car.name = update_data.get('name')
                     return jsonify({'message': car.get_car_info()})
                 if counter is len(list_cars):
                     return jsonify({'message': 'That car is absent in the list'})
