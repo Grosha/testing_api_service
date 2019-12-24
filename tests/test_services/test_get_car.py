@@ -20,13 +20,10 @@ class TestGetCar:
         [
             ('Accord', {'model': 'Accord', 'name': 'Honda', 'status': 1, 'type': 'Sedan'}),
             ('No car', 'Car model No car is absent in the list'),
-            # ('', ResponseMessages.CAR_MODEL_WAS_NOT_WRITTEN),
-            # (None, ResponseMessages.CAR_MODEL_WAS_NOT_WRITTEN),
         ]
     )
     def test_get_car_by_model(self, model_name, message):
         expected_car_information = car_api_service.get_car(model=model_name).get('message')
-        # actual_car_information = {'model': 'Accord', 'name': 'Honda', 'status': 1, 'type': 'Sedan'}
 
         assert expected_car_information == message, f'Incorrect car information for model:' \
             f'\n{expected_car_information}, must be\n{message}'
@@ -49,7 +46,6 @@ class TestGetCar:
     @pytest.fixture(scope="function", autouse=False)
     def rent_all_car(self):
         car_list = car_api_service.get_car_list().get('message')
-        # car_api_service.get_car()
 
         for car in car_list:
             car_api_service.update_car(model=car.get('model'), parameter='status=0')
