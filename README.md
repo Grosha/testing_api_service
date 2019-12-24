@@ -35,26 +35,42 @@ $ pipenv install --dev
 At this point you could work with code, just set in your ide right path to python interpreter - virtual env that was created in previous steps.
 
 
-## Build container with client and server:
+## Build container with server:
 
-```
-$ docker build -t car_service .
-```
+### 1. First way - via docker-compose:
 
-### Run server:
-run in server mode on 9666 port:
+    ```
+    $ docker-compose up -d
+    ```
 
-```
-$  docker run --rm -d -p 8000:8000 --name=car_service car_service:latest pipenv run python ./car_service.py
-$  docker run -d -p 8000:8000 --name=car_service car_service:latest pipenv run python ./car_service.py
-```
+### 2. Second way - via docker:
+
+#### Build image:
+
+    ```
+    $ docker build -t car_service .
+    ```
+
+#### Run server:
+
+    ```
+    $  docker run --rm -d -p 8000:8000 --name=car_service car_service:latest pipenv run python ./car_service.py
+    $  docker run -d -p 8000:8000 --name=car_service car_service:latest pipenv run python ./car_service.py
+    ```
 
 ### Run tests:
-run in client mode :
 
-```
-$  docker run --rm --name=gitlab_api_stub_client gitlab_stub:latest pipenv run python ./stub_service/client_worker.py $PIPELINE_ID
-```
+1. Go to the project folder in terminal
+2. Enter:
+    ```
+    $ pipenv run pytest tests/
+    ```
+
+### Check report:
+
+1. Report will presence in the terminal
+2. Report could be seen via browser -> go to the folder with project -> open file **pytest_report.html**
+
 
 ## Requests:
 
