@@ -6,7 +6,7 @@ services:
     command: pipenv run python ./car_service.py
     ports:
       -  8000:8000
-#    network_mode: host
+    network_mode: host
 #  report_serive:
 #    container_name: my_jenkins
 #    image: jenkins/jenkins:lts
