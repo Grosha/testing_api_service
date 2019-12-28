@@ -37,7 +37,7 @@ class BaseApiClient(APIClient):
 
 
 class CarApiService(BaseApiClient):
-    BASE_URL = 'http://localhost:8000'
+    BASE_URL = 'http://0.0.0.0:8000'
 
     def get_car(self, model=None, any_parameters=None):
         if model:

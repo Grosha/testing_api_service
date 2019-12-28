@@ -11,3 +11,5 @@ RUN pip install pipenv
 RUN pipenv install --dev
 RUN echo $(ls)
 RUN chmod 644 car_service.py
+
+#CMD ["bash", "runner.sh"]
