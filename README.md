@@ -55,7 +55,6 @@ At this point you could work with code, just set in your ide right path to pytho
 
     ```
     $  docker run --rm -d -p 8000:8000 --name=car_service car_service:latest pipenv run python ./car_service.py
-    $  docker run -d -p 8000:8000 --name=car_service car_service:latest pipenv run python ./car_service.py
     ```
 
 ### Run tests:
@@ -106,17 +105,5 @@ example of json - '{"name":"Tesla", "model":"Model3", "type":"Sedan", "status":1
 
 
 
-##
 ## Authors
 @grosha
-
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
