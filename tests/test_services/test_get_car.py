@@ -10,10 +10,10 @@ class TestGetCar:
 
     def test_get_car(self):
         car = car_api_service.get_car().get('message')
-        re.match('\w+', car['name'])
-        re.match('\w+', car['model'])
-        re.match('\w+', car['type'])
-        re.match(r'\\n\d+\\n', str(car['status']))
+        assert re.match('\w+', car['name']) is not None, 'Incorrect parameter name in car'
+        assert re.match('\w+', car['model']) is not None, 'Incorrect parameter model in car'
+        assert re.match('\w+', car['type']) is not None, 'Incorrect parameter type in car'
+        assert re.match('\d+', str(car['status'])) is not None, 'Incorrect parameter status in car'
 
     @pytest.mark.parametrize(
         'model_name, message',
@@ -26,7 +26,7 @@ class TestGetCar:
         expected_car_information = car_api_service.get_car(model=model_name).get('message')
 
         assert expected_car_information == message, f'Incorrect car information for model:' \
-            f'\n{expected_car_information}, must be\n{message}'
+                                                    f'\n{expected_car_information}, must be\n{message}'
 
     @pytest.mark.parametrize(
         'parameter, message',
@@ -41,7 +41,7 @@ class TestGetCar:
         expected_car_information = car_api_service.get_car(any_parameters=parameter).get('message')
 
         assert expected_car_information == message, f'Incorrect car information for model:' \
-            f'\n{expected_car_information}, must be\n{message}'
+                                                    f'\n{expected_car_information}, must be\n{message}'
 
     @pytest.fixture(scope="function", autouse=False)
     def rent_all_car(self):
@@ -56,12 +56,11 @@ class TestGetCar:
     def test_get_car_when_no_available(self, rent_all_car):
         actual_message = car_api_service.get_car().get('message')
         assert actual_message == ResponseMessages.NO_FREE_CAR_AVAILABLE, f'Incorrect message when all car are absent:' \
-            f'\n{actual_message} but must be\n{ ResponseMessages.NO_FREE_CAR_AVAILABLE}'
+                                                                         f'\n{actual_message} but must be\n{ResponseMessages.NO_FREE_CAR_AVAILABLE}'
 
     def test_get_car_fail(self):
         car = car_api_service.get_car().get('message')
-        # re.match('\w+', car['name'])
-        re.match('\w+', car['model'])
-        re.match('\w+', car['type'])
-        re.match(r'\\n\d+\\n', str(car['status']))
-        re.match(r'\\n\d+\\n', car['name'])
+        assert re.match('\w+', car['model']) is not None, 'Incorrect parameter model in car'
+        assert re.match('\w+', car['type']) is not None, 'Incorrect parameter type in car'
+        assert re.match('\d+', str(car['status'])) is not None, 'Incorrect parameter status in car'
+        assert re.match('\d+', car['name']) is not None, 'Incorrect parameter name in car'
