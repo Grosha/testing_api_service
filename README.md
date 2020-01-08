@@ -87,12 +87,6 @@ example:
 `GET /car?model='model_name'` parameter model must be get from the car list (see in file rent_car_company.py) -> return car information about that model
 
 
-#### POST /car
-
-`POST /car` -> return list with all cars
-example of json - '{"name":"Tesla", "model":"Model3", "type":"Sedan", "status":1}'
-
-
 #### DELETE /car/<model>
 
 `DELETE /car/<model>` parameter model must be get from the car list (see in file rent_car_company.py) -> return list with all cars
