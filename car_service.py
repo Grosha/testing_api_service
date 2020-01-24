@@ -51,8 +51,8 @@ def car():
                     return jsonify({'message': 'No free car available'})
     elif request.method == 'POST':
         try:
-            new_car = request.json
-            # new_car = json.loads(request.json)
+            # new_car = request.json
+            new_car = json.loads(request.data)
             if new_car['model']:
                 for car in list_cars:
                     model = new_car['model']
