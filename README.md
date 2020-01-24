@@ -86,6 +86,10 @@ example:
 
 `GET /car?model='model_name'` parameter model must be get from the car list (see in file rent_car_company.py) -> return car information about that model
 
+#### POST /car
+
+`POST /car` -> return {"message": "New car added"}
+request example - curl -d '{"name":"Tesla", "model":"Model3", "type":"Sedan", "status":1}' -H "Content-Type: application/json" -X POST http://localhost:8000/car
 
 #### DELETE /car/<model>
 

@@ -25,7 +25,13 @@ def car():
                     for car in list_cars:
                         counter += 1
                         if model.lower() == car.get_model().lower():
-                            return jsonify({'message': car.get_car_info()})
+                            if car.get_status() == 1:
+                                try:
+                                    return jsonify({'message': car.get_car_info()})
+                                finally:
+                                    car.status = 0
+                            else:
+                                return jsonify({'message': f'No free car {model} available'})
                         if counter == len(list_cars):
                             return jsonify({'message': f'Car model {model} is absent in the list'})
                 else:
@@ -44,9 +50,9 @@ def car():
                 if counter is len(list_cars):
                     return jsonify({'message': 'No free car available'})
     elif request.method == 'POST':
-        # new_car = request.json
         try:
-            new_car = json.loads(request.json)
+            new_car = request.json
+            # new_car = json.loads(request.json)
             if new_car['model']:
                 for car in list_cars:
                     model = new_car['model']
