@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-pipenv run pytest tests/
+ssh groskka@192.168.1.12
+docker build .
