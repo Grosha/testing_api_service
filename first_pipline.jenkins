@@ -18,7 +18,7 @@ pipeline {
             steps {
                 echo '=========================start building image================================='
                 dir('docker/test1') {
-                    sh 'docker build .'
+                    sh 'bash runner.sh'
                 }
             }
 
