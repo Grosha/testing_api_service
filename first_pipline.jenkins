@@ -16,10 +16,10 @@ pipeline {
         }
         stage('create docker image'){
             steps {
-                sh 'ssh groskka@192.168.1.12'
+
                 echo '=========================start building image================================='
                 dir('docker/test1') {
-                    sh 'docker build .'
+                    sh 'ssh groskka@192.168.1.12 & docker build .'
                 }
             }
 
