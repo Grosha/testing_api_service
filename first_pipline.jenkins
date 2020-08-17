@@ -17,9 +17,8 @@ pipeline {
         stage('create docker image'){
             steps {
                 echo '=========================start building image================================='
-                dir('docker/test1') {
-                    CMD ["bash", "runner.sh"]
-                }
+                cd docker/test1
+                ./runner.sh
             }
 
         }
