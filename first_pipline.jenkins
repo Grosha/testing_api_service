@@ -1,11 +1,12 @@
 pipeline {
-    agent { docker { image 'python:3.7' } }
+    agent {
+        label 'master'
+    }
+    options{
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
     stages {
-        stage('docker build') {
-            steps {
-                sh 'python --version'
-            }
-        }
         stage('get hostname') {
             steps {
                 sh 'ssh groskka@192.168.1.12 \'hostname\''
