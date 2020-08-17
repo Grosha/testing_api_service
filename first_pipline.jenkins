@@ -18,7 +18,7 @@ pipeline {
             steps {
                 echo '=========================start building image================================='
                 dir('docker/test1') {
-                    sh 'ssh groskka@192.168.1.12; pwd; la -l; runner.sh'
+                    sh 'runner.sh'
                 }
             }
 
