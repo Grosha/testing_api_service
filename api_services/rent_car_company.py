@@ -1,4 +1,5 @@
 import json
+from enum import Enum
 
 
 class Car:
@@ -22,6 +23,17 @@ class Car:
         return json.loads('{' + car_info + '}')
 
 
+class CarStatus(Enum):
+    AVAILABLE = 1
+    NOT_AVAILABLE = 0
+
+
+class CarType(Enum):
+    SEDAN = 'Sedan'
+    CROSSOVER = 'Crossover'
+    JEEP = 'Jeep'
+
+
 # list_cars = {
 #     0: (Car('Ford', 'Focus', 'Sedan', 1)),
 #     1: (Car('Ford', 'Mustang', 'Sedan', 1)),
@@ -37,17 +49,17 @@ class Car:
 # }
 
 list_cars = {
-    Car('Ford', 'Focus', 'Sedan', 1),
-    Car('Ford', 'Mustang', 'Sedan', 1),
-    Car('Honda', 'Accord', 'Sedan', 1),
-    Car('Honda', 'CRV', 'Crossover', 1),
-    Car('Honda', 'Civic', 'Sedan', 1),
-    Car('Lexus', 'IS250', 'Sedan', 1),
-    Car('Mercedes', 'CLS200', 'Sedan', 1),
-    Car('Mercedes', 'A180', 'Sedan', 1),
-    Car('Lexus', 'RX350', 'Crossover', 1),
-    Car('Toyota', 'Land Cruiser', 'Jeep', 1),
-    Car('Toyota', 'Land Prado', 'Jeep', 1)
+    Car('Ford', 'Focus', CarType.SEDAN, CarStatus.AVAILABLE),
+    Car('Ford', 'Mustang', CarType.SEDAN, CarStatus.AVAILABLE),
+    Car('Honda', 'Accord', CarType.SEDAN, CarStatus.AVAILABLE),
+    Car('Honda', 'CRV', CarType.CROSSOVER, CarStatus.AVAILABLE),
+    Car('Honda', 'Civic', CarType.SEDAN, CarStatus.AVAILABLE),
+    Car('Lexus', 'IS250', CarType.SEDAN, CarStatus.AVAILABLE),
+    Car('Mercedes', 'CLS200', CarType.SEDAN, CarStatus.AVAILABLE),
+    Car('Mercedes', 'A180', CarType.SEDAN, CarStatus.AVAILABLE),
+    Car('Lexus', 'RX350', CarType.CROSSOVER, CarStatus.AVAILABLE),
+    Car('Toyota', 'Land Cruiser', CarType.JEEP, CarStatus.AVAILABLE),
+    Car('Toyota', 'Land Prado', CarType.JEEP, CarStatus.AVAILABLE)
 }
 
 

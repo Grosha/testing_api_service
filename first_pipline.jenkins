@@ -4,7 +4,9 @@ pipeline {
     agent {
         label 'master'
     }
-    triggers {pollSCM('* * * * *')}
+    triggers {
+        pollSCM('* * * * *')
+    }
     options{
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
@@ -20,7 +22,7 @@ pipeline {
                 echo '=========================start building image================================='
                 dir('docker/test1') {
                     sh 'bash runner.sh'
-                    
+
                 }
             }
 
