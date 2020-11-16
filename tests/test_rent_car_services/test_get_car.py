@@ -1,7 +1,9 @@
+import json
 import re
 
 import pytest
 
+from api_services.rent_car_company import CarStatus
 from api_services.response_messages import ResponseMessages
 from api_services.api_services import CarApiService
 
@@ -9,24 +11,33 @@ from api_services.api_services import CarApiService
 class TestGetCar:
 
     def test_get_car(self):
-        car = CarApiService.get_car()
+        car = CarApiService.get_car()\
+            .assert_status_code(200)\
+            .get_json_message()
         assert re.match(r'\w+', car['name']) is not None, 'Incorrect parameter name in car'
         assert re.match(r'\w+', car['model']) is not None, 'Incorrect parameter model in car'
         assert re.match(r'\w+', car['type']) is not None, 'Incorrect parameter type in car'
         assert re.match(r'\d+', str(car['status'])) is not None, 'Incorrect parameter status in car'
 
-    @pytest.mark.parametrize(
-        'model_name, message',
-        [
-            ({'model': 'Accord'}, {'model': 'Accord', 'name': 'Honda', 'status': 1, 'type': 'Sedan'}),
-            ({'model': 'No car'}, 'Car model No car is absent in the list'),
-        ]
-    )
-    def test_get_car_by_model(self, model_name, message):
-        expected_car_information = CarApiService.get_car(params=model_name)
+    def test_get_car_by_model(self):
+        model_name = {'model': 'Accord'}
+        message = {'model': 'Accord', 'name': 'Honda', 'status': 1, 'type': 'Sedan'}
+        actual_car_information = CarApiService.get_car(params=model_name)\
+            .assert_status_code(200)\
+            .get_json_message()
 
-        assert expected_car_information == message, f'Incorrect car information for model:' \
-                                                    f'\n{expected_car_information}, must be\n{message}'
+        assert actual_car_information == message, f'Incorrect car information for model:' \
+                                                    f'\n{actual_car_information}, must be\n{message}'
+
+    def test_get_car_by_incorrect_model(self):
+        model_name = {'model': 'No car'}
+        message = 'Car model No car is absent in the list'
+        actual_car_information = CarApiService.get_car(params=model_name)\
+            .assert_status_code(200)\
+            .get_message()
+
+        assert actual_car_information == message, f'Incorrect car information for model:' \
+                                                    f'\n{actual_car_information}, must be\n{message}'
 
     @pytest.mark.parametrize(
         'parameter, message',
@@ -38,30 +49,40 @@ class TestGetCar:
         ]
     )
     def test_get_car_by_any_parameters(self, parameter, message):
-        expected_car_information = CarApiService.get_car(params=parameter)
+        expected_car_information = CarApiService.get_car(params=parameter)\
+            .assert_status_code(200)\
+            .get_message()
 
         assert expected_car_information == message, f'Incorrect car information for model:' \
                                                     f'\n{expected_car_information}, must be\n{message}'
 
     @pytest.fixture(scope="function", autouse=False)
     def rent_all_car(self):
-        car_list = CarApiService.get_car_list()
-        car_status_available = {'status': 0}
-        car_status_not_available = {'status': 1}
+        car_list = CarApiService.get_car_list()\
+            .assert_status_code(200)\
+            .get_message()
+        car_status_not_available = {'status': CarStatus.NOT_AVAILABLE}
+        car_status_available = {'status': CarStatus.AVAILABLE}
 
         for car in car_list:
-            CarApiService.update_car(model=car.get('model'), params=car_status_available)
+            car = json.loads(car)
+            CarApiService.update_car(model=car.get('model'), params=car_status_not_available).assert_status_code(200)
         yield
         for car in car_list:
-            CarApiService.update_car(model=car.get('model'), params=car_status_not_available)
+            car = json.loads(car)
+            CarApiService.update_car(model=car.get('model'), params=car_status_available).assert_status_code(200)
 
     def test_get_car_when_no_available(self, rent_all_car):
-        actual_message = CarApiService.get_car()
+        actual_message = CarApiService.get_car()\
+            .assert_status_code(200)\
+            .get_message()
         assert actual_message == ResponseMessages.NO_FREE_CAR_AVAILABLE, f'Incorrect message when all car are absent:' \
                                                                          f'\n{actual_message} but must be\n{ResponseMessages.NO_FREE_CAR_AVAILABLE}'
 
     def test_get_car_fail(self):
-        car = CarApiService.get_car()
+        car = CarApiService.get_car()\
+            .assert_status_code(200)\
+            .get_json_message()
         assert re.match(r'\w+', car['model']) is not None, 'Incorrect parameter model in car'
         assert re.match(r'\w+', car['type']) is not None, 'Incorrect parameter type in car'
         assert re.match(r'\d+', str(car['status'])) is not None, 'Incorrect parameter status in car'

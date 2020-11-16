@@ -1,0 +1,16 @@
+[start options]
+locustfile: performance/office.py
+host: http://localhost:8000
+
+[load options]
+users: 20
+spawn-rate: 2
+run-time: 30s
+
+[report options]
+headless: true
+only-summary: true
+
+[loginng options]
+loglevel: INFO
+logfile: report/locust_logfile1.log

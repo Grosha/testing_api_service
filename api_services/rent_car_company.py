@@ -1,5 +1,11 @@
 import json
 from enum import Enum
+from json import JSONEncoder
+
+
+class CarEncoder(JSONEncoder):
+    def default(self, o):
+        return o.__dict__
 
 
 class Car:
@@ -20,7 +26,9 @@ class Car:
 
     def get_car_info(self):
         car_info = f'"name": "{self.name}", "model": "{self.model}", "type": "{self.type}", "status": {self.status}'
-        return json.loads('{' + car_info + '}')
+        # print('{' + car_info + '}')
+        # return json.loads('{' + car_info + '}')
+        return CarEncoder().encode(self)
 
 
 class CarStatus(Enum):
@@ -32,6 +40,7 @@ class CarType(Enum):
     SEDAN = 'Sedan'
     CROSSOVER = 'Crossover'
     JEEP = 'Jeep'
+    SPORT_CAR = 'Sportcar'
 
 
 # list_cars = {
@@ -49,17 +58,17 @@ class CarType(Enum):
 # }
 
 list_cars = {
-    Car('Ford', 'Focus', CarType.SEDAN, CarStatus.AVAILABLE),
-    Car('Ford', 'Mustang', CarType.SEDAN, CarStatus.AVAILABLE),
-    Car('Honda', 'Accord', CarType.SEDAN, CarStatus.AVAILABLE),
-    Car('Honda', 'CRV', CarType.CROSSOVER, CarStatus.AVAILABLE),
-    Car('Honda', 'Civic', CarType.SEDAN, CarStatus.AVAILABLE),
-    Car('Lexus', 'IS250', CarType.SEDAN, CarStatus.AVAILABLE),
-    Car('Mercedes', 'CLS200', CarType.SEDAN, CarStatus.AVAILABLE),
-    Car('Mercedes', 'A180', CarType.SEDAN, CarStatus.AVAILABLE),
-    Car('Lexus', 'RX350', CarType.CROSSOVER, CarStatus.AVAILABLE),
-    Car('Toyota', 'Land Cruiser', CarType.JEEP, CarStatus.AVAILABLE),
-    Car('Toyota', 'Land Prado', CarType.JEEP, CarStatus.AVAILABLE)
+    Car('Ford', 'Focus', CarType.SEDAN.value, CarStatus.AVAILABLE.value),
+    Car('Ford', 'Mustang', CarType.SEDAN.value, CarStatus.AVAILABLE.value),
+    Car('Honda', 'Accord', CarType.SEDAN.value, CarStatus.AVAILABLE.value),
+    Car('Honda', 'CRV', CarType.CROSSOVER.value, CarStatus.AVAILABLE.value),
+    Car('Honda', 'Civic', CarType.SEDAN.value, CarStatus.AVAILABLE.value),
+    Car('Lexus', 'IS250', CarType.SEDAN.value, CarStatus.AVAILABLE.value),
+    Car('Mercedes', 'CLS200', CarType.SEDAN.value, CarStatus.AVAILABLE.value),
+    Car('Mercedes', 'A180', CarType.SEDAN.value, CarStatus.AVAILABLE.value),
+    Car('Lexus', 'RX350', CarType.CROSSOVER.value, CarStatus.AVAILABLE.value),
+    Car('Toyota', 'Land Cruiser', CarType.JEEP.value, CarStatus.AVAILABLE.value),
+    Car('Toyota', 'Land Prado', CarType.JEEP.value, CarStatus.AVAILABLE.value)
 }
 
 

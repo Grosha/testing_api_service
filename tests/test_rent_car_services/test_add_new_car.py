@@ -3,7 +3,7 @@ from random import randint
 
 import pytest
 
-from api_services.rent_car_company import CarType, CarStatus, Car
+from api_services.rent_car_company import CarType, CarStatus, Car, CarEncoder
 from api_services.response_messages import ResponseMessages
 from api_services.api_services import CarApiService
 
@@ -13,14 +13,16 @@ class TestAddNewCar:
     def test_add_new_car(self):
         model = f'Accord v{randint(0, 1000)}'
         # new_car = '{"name":"Honda", "model":"' + model + '", "type":"Sedan", "status":1}'
-        new_car = Car('Honda', model, CarType.SEDAN, CarStatus.AVAILABLE).get_car_info()
+        # print(new_car_)
+        new_car = Car('Honda', model, CarType.SEDAN.value, CarStatus.AVAILABLE.value).get_car_info()
         add_response_message = CarApiService.add_new_car(car=new_car)
 
         assert add_response_message == ResponseMessages.NEW_CAR_ADDED, f'Problem with adding car:' \
                                                                        f'\n{add_response_message}, must be\n{ResponseMessages.NEW_CAR_ADDED}'
 
     def test_add_presented_car(self):
-        new_car = '{"name":"Honda", "model":"Accord", "type":"Sedan", "status":1}'
+        # new_car = '{"name":"Honda", "model":"Accord", "type":"Sedan", "status":1}'
+        new_car = Car('Honda', 'Accord', CarType.SEDAN.value, CarStatus.AVAILABLE.value).get_car_info()
         add_response_message = CarApiService.add_new_car(car=new_car)
 
         assert 'Car presence in the list:' in add_response_message, f'Problem with adding presented car:' \
@@ -39,20 +41,25 @@ class TestAddNewCar:
              "Incorrect parameter 'status' in json body for object Car"),
             ('{"name":"Accord", "model":"Hondas", "type":"Sedan"}',
              "Incorrect parameter 'status' in json body for object Car"),
-            ('', 'Problem with json the JSON object must be str, bytes or bytearray, not NoneType'),
+            ('', 'Problem with json Expecting value: line 1 column 1 (char 0)')
         ]
     )
     def test_negative_cases(self, new_car, message):
         # new_car = '{"name":"Accord", "model":"Honda", "type":"Sedan", "status":1}'
-        add_response_message = CarApiService.add_new_car(car=new_car)
+        add_response_message = CarApiService.add_new_car(car=new_car)\
+            .assert_status_code(200)\
+            .get_message()
 
         assert message == add_response_message, 'Incorrect error while server was adding new car'
 
     def test_smoke_suite(self):
-        new_car = f'{"name":"Lamborghini", "model":"Huracan{randint(0, 1000)}", "type":"sportcar", "status":1}'
+        new_car = Car('Lamborghini', f'Huracan{randint(0, 1000)}', CarType.SPORT_CAR.value, CarStatus.AVAILABLE.value).get_car_info()
+
 
         # add new car
-        add_response_message = CarApiService.add_new_car(car=new_car)
+        add_response_message = CarApiService.add_new_car(car=new_car)\
+            .assert_status_code(200)\
+            .get_message()
         add_message = 'New car added'
         assert add_response_message == add_message, f'Problem with adding car:' \
                                                     f'\n{add_response_message}, must be\n{add_message}'
@@ -60,25 +67,35 @@ class TestAddNewCar:
         # get just added car
         new_car = json.loads(new_car)
         model_parameter = {'model': new_car['model']}
-        new_car_information = CarApiService.get_car(params=model_parameter)
-        assert new_car_information == new_car, f'Incorrect car information for model:' \
-                                               f'\n{new_car_information}, must be\n{new_car}'
+        new_car_response = CarApiService.get_car(params=model_parameter)\
+            .assert_status_code(200)\
+            .get_json_message()
+        # new_car_information = json.loads(get_car_response.json().get('message'))
+        assert new_car_response == new_car, f'Incorrect car information for model:' \
+                                               f'\n{new_car_response}, must be\n{new_car}'
 
         # update car
         new_model = f'Test{new_car["model"]}'
         new_model_parameter = {'model': new_model}
-        update_car_response = CarApiService.update_car(model=new_car["model"], params=new_model_parameter)
+        update_car_response = CarApiService.update_car(model=new_car["model"], params=new_model_parameter)\
+            .assert_status_code(200)\
+            .get_json_message()
+        # update_car_information = json.loads(update_car_response.json().get('message'))
         assert update_car_response['model'] == new_model, f'Incorrect car information for model after update:' \
                                                           f'\n{update_car_response}, must be\n{new_model}'
 
         # remove just added/updated car
-        delete_response_message = CarApiService.delete_car(model=new_model)
+        delete_response_message = CarApiService.delete_car(model=new_model)\
+            .assert_status_code(200)\
+            .get_message()
         delete_message = f'Car model {new_model} removed'
         assert delete_response_message == delete_message, f'Problem with delete car:' \
                                                           f'\n{delete_response_message}, must be\n{delete_message}'
 
         # get removed car
-        no_car_response = CarApiService.get_car(params=new_model_parameter)
+        no_car_response = CarApiService.get_car(params=new_model_parameter)\
+            .assert_status_code(200)\
+            .get_message()
         no_car_message = f'Car model {new_model} is absent in the list'
         assert no_car_response == no_car_message, f'Removed car presence in the list:' \
                                                   f'\n{no_car_response}, must be\n{no_car_message}'

@@ -1,0 +1,12 @@
+[start options]
+locustfile: performance/office.py
+host: http://localhost:8000
+
+[worker options]
+worker: true
+master-host: 127.0.0.1
+master-port: 5557
+
+[loginng options]
+loglevel: DEBUG
+logfile: report/worker_logfile.log

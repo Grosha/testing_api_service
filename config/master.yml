@@ -1,0 +1,26 @@
+[start options]
+locustfile: performance/office.py
+host: http://localhost:8000
+
+[load options]
+users: 10
+spawn-rate: 2
+run-time: 30s
+
+[report options]
+headless: true
+csv: report/result_run
+only-summary: true
+
+[loginng options]
+loglevel: INFO
+logfile: report/master_logfile.log
+
+[master options]
+master: true
+expect-workers: 2
+
+#[step load model]
+#step-load: true
+#step-users: 4
+#step-time: 2
